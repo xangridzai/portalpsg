@@ -1,6 +1,6 @@
 {
-  "name": "Portal Tautan UP PMPTSP Kec. Pesanggrahan",
-  "short_name": "PTSP Pesanggrahan",
+  "name": "Portal Informasi UPPMPTSP Kec. Pesanggrahan",
+  "short_name": "PortalPSG",
   "description": "Portal tautan resmi UP PMPTSP Kecamatan Pesanggrahan dengan menu aksesibilitas untuk semua pengguna.",
   "start_url": "./index.html",
   "scope": "./",
