@@ -12,7 +12,7 @@
    (lihat gas/Code.gs). Jika API_URL kosong / gagal diakses, aplikasi akan
    memakai FALLBACK_LINKS di bawah supaya halaman tetap berfungsi.
 ------------------------------------------------------------------------- */
-const API_URL = "https://script.google.com/macros/s/AKfycbxcpecbFB-qO8C5AzzoGQj2zH3tmMqbIbFVv_eylbRK-sSJY_3k2g8gSbkzIBAoMEwq/exec"; // contoh: "https://script.google.com/macros/s/AKfycbxcpecbFB-qO8C5AzzoGQj2zH3tmMqbIbFVv_eylbRK-sSJY_3k2g8gSbkzIBAoMEwq/exec"
+const API_URL = ""; // contoh: "https://script.google.com/macros/s/XXXXX/exec"
 
 const FALLBACK_LINKS = [
   {
@@ -84,7 +84,8 @@ const ICONS = {
   link: '<path d="M9 15l6-6"/><path d="M10 6l1-1a4 4 0 0 1 6 6l-1 1"/><path d="M14 18l-1 1a4 4 0 0 1-6-6l1-1"/>',
   cursor: '<path d="M4 3l7 18 2.5-7.5L21 11z"/>',
   guide: '<rect x="3" y="4" width="18" height="4" rx="1"/><rect x="3" y="10" width="12" height="4" rx="1"/><rect x="3" y="16" width="16" height="4" rx="1"/>',
-  reading: '<path d="M4 5c3-1.5 6-1.5 8 0v14c-2-1.5-5-1.5-8 0z"/><path d="M20 5c-3-1.5-6-1.5-8 0v14c2-1.5 5-1.5 8 0z"/>'
+  reading: '<path d="M4 5c3-1.5 6-1.5 8 0v14c-2-1.5-5-1.5-8 0z"/><path d="M20 5c-3-1.5-6-1.5-8 0v14c2-1.5 5-1.5 8 0z"/>',
+  speaker: '<path d="M4 10v4"/><path d="M8 6v12"/><path d="M12 3v18"/><path d="M16 6v12"/><path d="M20 10v4"/>'
 };
 
 const A11Y_FEATURES = [
@@ -134,7 +135,7 @@ const A11Y_FEATURES = [
     id: "bigCursor", type: "toggle", icon: ICONS.cursor, label: "Kursor Besar", cls: "a11y-big-cursor"
   },
   {
-    id: "readingGuide", type: "toggle", icon: ICONS.guide, label: "Panduan Baca", cls: "a11y-reading-guide"
+    id: "readAloud", type: "speech", icon: ICONS.speaker, label: "Baca Halaman"
   }
 ];
 
@@ -158,16 +159,48 @@ function saveA11yState(state) {
 }
 
 let a11yState = loadA11yState();
+let isReadingAloud = false;
 
 function applyA11yState() {
   const root = document.documentElement;
   A11Y_FEATURES.forEach(f => {
     if (f.type === "cycle") {
       f.apply(root, a11yState[f.id] || 0);
-    } else {
+    } else if (f.type === "toggle") {
       root.classList.toggle(f.cls, !!a11yState[f.id]);
     }
+    // type "speech" tidak punya state yang disimpan/di-apply saat load
   });
+}
+
+/* -------------------------------------------------------------------------
+   Baca Halaman (Text-to-Speech) — pakai Web Speech API bawaan browser,
+   tidak butuh layanan/API eksternal. Statusnya sengaja TIDAK disimpan ke
+   localStorage supaya halaman tidak otomatis bicara sendiri tiap dibuka.
+------------------------------------------------------------------------- */
+function startReadAloud() {
+  if (!("speechSynthesis" in window)) {
+    alert("Maaf, browser ini tidak mendukung fitur Baca Halaman (Text-to-Speech). Coba pakai Chrome terbaru.");
+    return;
+  }
+  const container = document.getElementById("konten");
+  const text = (container.innerText || container.textContent || "").trim();
+  if (!text) return;
+
+  window.speechSynthesis.cancel(); // hentikan bacaan sebelumnya kalau ada
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "id-ID";
+  utterance.rate = 1;
+  utterance.onend = () => { isReadingAloud = false; renderA11yPanel(); };
+  utterance.onerror = () => { isReadingAloud = false; renderA11yPanel(); };
+
+  window.speechSynthesis.speak(utterance);
+  isReadingAloud = true;
+}
+
+function stopReadAloud() {
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  isReadingAloud = false;
 }
 
 /* -------------------------------------------------------------------------
@@ -177,8 +210,17 @@ function renderA11yPanel() {
   const grid = document.getElementById("a11yGrid");
   grid.innerHTML = "";
   A11Y_FEATURES.forEach(f => {
-    const isOn = f.type === "cycle" ? (a11yState[f.id] || 0) > 0 : !!a11yState[f.id];
-    const stateLabel = f.type === "cycle" ? f.levelNames[a11yState[f.id] || 0] : (isOn ? "Aktif" : "Nonaktif");
+    let isOn, stateLabel;
+    if (f.type === "cycle") {
+      isOn = (a11yState[f.id] || 0) > 0;
+      stateLabel = f.levelNames[a11yState[f.id] || 0];
+    } else if (f.type === "speech") {
+      isOn = isReadingAloud;
+      stateLabel = isReadingAloud ? "Sedang membaca…" : "Nonaktif";
+    } else {
+      isOn = !!a11yState[f.id];
+      stateLabel = isOn ? "Aktif" : "Nonaktif";
+    }
 
     const card = document.createElement("button");
     card.type = "button";
@@ -193,11 +235,15 @@ function renderA11yPanel() {
     card.addEventListener("click", () => {
       if (f.type === "cycle") {
         a11yState[f.id] = ((a11yState[f.id] || 0) + 1) % f.levels.length;
+        saveA11yState(a11yState);
+        applyA11yState();
+      } else if (f.type === "speech") {
+        if (isReadingAloud) stopReadAloud(); else startReadAloud();
       } else {
         a11yState[f.id] = !a11yState[f.id];
+        saveA11yState(a11yState);
+        applyA11yState();
       }
-      saveA11yState(a11yState);
-      applyA11yState();
       renderA11yPanel();
     });
     grid.appendChild(card);
@@ -237,6 +283,7 @@ fab.addEventListener("click", openPanel);
 closeBtn.addEventListener("click", closePanel);
 overlay.addEventListener("click", closePanel);
 resetBtn.addEventListener("click", () => {
+  stopReadAloud();
   a11yState = {};
   A11Y_FEATURES.forEach(f => { a11yState[f.id] = f.type === "cycle" ? 0 : false; });
   saveA11yState(a11yState);

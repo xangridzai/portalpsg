@@ -110,8 +110,15 @@ sudah dibuat di sini.
 | Jeda Animasi | Toggle |
 | Sorot Tautan | Toggle |
 | Kursor Besar | Toggle |
-| Panduan Baca (outline saat hover/focus) | Toggle |
+| Baca Halaman (Text-to-Speech) | Aksi (mulai/berhenti) |
 
 Semua pengaturan disimpan di `localStorage` perangkat pengguna, jadi
 preferensi tetap tersimpan di kunjungan berikutnya. Tersedia juga tombol
 **"Atur Ulang Semua"** di dalam panel.
+
+**Catatan soal Baca Halaman:** fitur ini pakai Web Speech API bawaan
+browser (`speechSynthesis`), tidak perlu API/layanan eksternal apa pun.
+Didukung oleh Chrome, Edge, dan Safari terbaru. Statusnya sengaja tidak
+disimpan ke `localStorage`, supaya halaman tidak otomatis membacakan
+dirinya sendiri setiap kali dibuka — pengguna harus menekan tombolnya lagi
+tiap kunjungan baru.
