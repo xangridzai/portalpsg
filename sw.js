@@ -33,7 +33,7 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
 
-  // Jangan cache panggilan ke Google Apps Script — selalu ambil data terbaru.
+  // Jangan cache panggilan ke Google Apps Script — selalu ambil data terbaru. 
   if (req.url.includes("script.google.com")) {
     event.respondWith(fetch(req).catch(() => caches.match(req)));
     return;
