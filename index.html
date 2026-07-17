@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Portal Tautan UP PMPTSP Kecamatan Pesanggrahan</title>
+<meta name="description" content="Portal tautan resmi UP PMPTSP Kecamatan Pesanggrahan — profil, layanan perizinan, sistem online, hingga konsultasi & pengaduan, dilengkapi menu aksesibilitas untuk semua pengguna." />
+<meta name="theme-color" content="#0b2e4f" />
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
+<link rel="icon" href="icons/icon-192.png" />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<a href="#konten" class="skip-link">Langsung ke konten</a>
+
+<header class="brand-header">
+  <div class="brand-avatar" aria-hidden="true">PS</div>
+  <h1 class="brand-name">UP PMPTSP Kecamatan Pesanggrahan</h1>
+  <p class="brand-tagline">
+    Satu portal untuk semua layanan, dokumen, dan kanal pengaduan kami —
+    dapat diakses semua orang, termasuk pengguna dengan kebutuhan aksesibilitas.
+  </p>
+</header>
+
+<main id="konten" class="portal-main">
+  <div id="link-container">
+    <p class="state-msg" id="loading-msg">Memuat daftar tautan…</p>
+  </div>
+
+  <p class="portal-footer">
+    © <span id="year"></span> UP PMPTSP Kecamatan Pesanggrahan. Butuh bantuan?
+    <a href="https://api.whatsapp.com/message/Y4HLXQEAAKONJ1?autoload=1&app_absent=0" target="_blank" rel="noopener noreferrer">Hubungi kami via WhatsApp</a>.
+  </p>
+</main>
+
+<!-- ============ Accessibility floating button ============ -->
+<button type="button" class="a11y-fab" id="a11yFab" aria-haspopup="dialog" aria-expanded="false" aria-controls="a11yPanel" aria-label="Buka menu aksesibilitas">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="4" r="2"></circle>
+    <path d="M19 8l-7 2-7-2"></path>
+    <path d="M12 10v4"></path>
+    <path d="M8 22l2-8 2 3 2-3 2 8"></path>
+    <path d="M8 13l-3 2"></path>
+    <path d="M16 13l3 2"></path>
+  </svg>
+</button>
+
+<div class="a11y-overlay" id="a11yOverlay"></div>
+
+<section class="a11y-panel" id="a11yPanel" role="dialog" aria-modal="true" aria-labelledby="a11yPanelTitle" aria-hidden="true">
+  <div class="a11y-panel-header">
+    <h2 id="a11yPanelTitle">Menu Aksesibilitas</h2>
+    <button type="button" class="a11y-close" id="a11yClose" aria-label="Tutup menu aksesibilitas">✕</button>
+  </div>
+
+  <div class="a11y-panel-body">
+    <div class="a11y-reset-row">
+      <button type="button" class="a11y-reset" id="a11yReset">Atur Ulang Semua</button>
+    </div>
+
+    <div class="a11y-grid" id="a11yGrid">
+      <!-- cards injected by app.js -->
+    </div>
+  </div>
+
+  <div class="a11y-panel-footer">
+    Pengaturan disimpan otomatis di perangkat ini.
+  </div>
+</section>
+
+<script src="app.js" defer></script>
+</body>
+</html>
