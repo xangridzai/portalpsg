@@ -54,7 +54,7 @@ const FALLBACK_LINKS = [
     category: "Konsultasi & Pengaduan",
     items: [
       { title: "Alur Pelayanan Konsultasi dan Pengaduan", desc: "Dokumen resmi", url: "https://drive.google.com/file/d/1mIcFape2Kj7rNYC8SnAWkAmAvH4_kirc/view?usp=sharing", icon: "🗣️" },
-      { title: "WhatsApp Konsultasi", desc: "Chat langsung dengan petugas", url: "https://api.whatsapp.com/message/Y4HLXQEAAKONJ1?autoload=1&app_absent=0", icon: "💬" },
+      { title: "WhatsApp Konsultasi & Pengaduan", desc: "Chat langsung dengan petugas", url: "https://api.whatsapp.com/message/Y4HLXQEAAKONJ1?autoload=1&app_absent=0", icon: "💬" },
       { title: "Instagram", desc: "@ptsp.kec.pesanggrahan", url: "https://www.instagram.com/ptsp.kec.pesanggrahan?igsh=bjZkNG5kMWUwZzYy", icon: "📷" }
     ]
   },
